@@ -10,6 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
     rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
 <style>
   :root {
     --void: #0A0C0E;
@@ -76,6 +77,21 @@
   }
   .lookup button:hover { background: #ffc233; transform: translateY(-1px); }
 
+  .or-divider {
+    display: flex; align-items: center; gap: 14px; max-width: 420px; margin: 22px auto;
+    font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 1px;
+  }
+  .or-divider::before, .or-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .scan-btn {
+    font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.4px;
+    background: transparent; color: var(--teal); border: 1px solid rgba(0,217,181,0.35);
+    border-radius: 4px; padding: 12px 22px; cursor: pointer; display: inline-flex;
+    align-items: center; gap: 9px; transition: background .2s ease, border-color .2s ease;
+  }
+  .scan-btn:hover { background: rgba(0,217,181,0.08); border-color: var(--teal); }
+  .scan-btn .cam-icon { width: 15px; height: 15px; flex-shrink: 0; }
+
   .boot { font-family: var(--mono); font-size: 13px; color: var(--muted); text-align: center; padding: 60px 20px; }
   .boot .cursor { display: inline-block; width: 8px; height: 14px; background: var(--copper); margin-left: 6px; animation: blink 1s step-end infinite; vertical-align: -2px; }
   @keyframes blink { 50% { opacity: 0; } }
@@ -127,6 +143,51 @@
 
   footer { position: relative; z-index: 1; border-top: 1px solid var(--line); padding: 24px 5vw; text-align: center; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
 
+  /* ---- QR scanner overlay ---- */
+  .scanner-overlay {
+    position: fixed; inset: 0; z-index: 100; background: rgba(10,12,14,0.92);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .scanner-overlay.show { display: flex; }
+  .scanner-panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 22px; width: 100%; max-width: 440px; text-align: center;
+  }
+  .scanner-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .scanner-head h3 { font-family: var(--disp); font-size: 18px; }
+  .scanner-close {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-family: var(--mono);
+    font-size: 14px; display: flex; align-items: center; justify-content: center;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .scanner-close:hover { border-color: var(--copper); color: var(--copper); }
+  .scanner-video-wrap {
+    position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden;
+    background: #000; border: 1px solid var(--line);
+  }
+  .scanner-video-wrap video { width: 100%; height: 100%; object-fit: cover; }
+  .scan-frame {
+    position: absolute; inset: 14%; border: 2px solid var(--teal); border-radius: 10px;
+    box-shadow: 0 0 0 999px rgba(10,12,14,0.35); pointer-events: none;
+  }
+  .scan-frame::before, .scan-frame::after {
+    content: ""; position: absolute; width: 22px; height: 22px; border: 3px solid var(--copper);
+  }
+  .scan-frame::before { top: -3px; left: -3px; border-right: none; border-bottom: none; }
+  .scan-frame::after { bottom: -3px; right: -3px; border-left: none; border-top: none; }
+  .scan-line {
+    position: absolute; left: 14%; right: 14%; top: 14%; height: 2px; background: var(--teal);
+    box-shadow: 0 0 8px var(--teal); animation: scanmove 2s ease-in-out infinite;
+  }
+  @keyframes scanmove { 0%,100% { top: 14%; } 50% { top: 84%; } }
+  .scanner-status {
+    font-family: var(--mono); font-size: 12.5px; color: var(--muted); margin-top: 16px; min-height: 18px;
+  }
+  .scanner-status.err { color: var(--red); }
+  .scanner-status.ok { color: var(--teal); }
+
   @media (max-width:640px) {
     .grid2 { grid-template-columns: 1fr; }
     .card-body { padding: 28px 22px; }
@@ -154,6 +215,22 @@
   Certificates are issued and verified by DarkSyntax · Udyam No. UDYAM-PY-03-0058394 · darksyntax.xyz
 </footer>
 
+<!-- QR scanner overlay -->
+<div class="scanner-overlay" id="scanner-overlay">
+  <div class="scanner-panel">
+    <div class="scanner-head">
+      <h3>Scan certificate QR</h3>
+      <button class="scanner-close" id="scanner-close" aria-label="Close">✕</button>
+    </div>
+    <div class="scanner-video-wrap">
+      <video id="scanner-video" playsinline muted autoplay></video>
+      <div class="scan-frame"></div>
+      <div class="scan-line"></div>
+    </div>
+    <div class="scanner-status" id="scanner-status">Point your camera at the QR code on the certificate.</div>
+  </div>
+</div>
+
 <script>
 const ORG_NAME = "DarkSyntax";
 const app = document.getElementById('app');
@@ -179,6 +256,15 @@ function goTo(id){
   window.location.href = url.toString();
 }
 
+const CAM_ICON = `<svg class="cam-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 8a2 2 0 0 1 2-2h1.5l1-1.5h7l1 1.5H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.6"/></svg>`;
+
+function scanButtonHTML(){
+  return `
+    <div class="or-divider">OR</div>
+    <button class="scan-btn" id="scan-open" type="button">${CAM_ICON}Scan QR code</button>
+  `;
+}
+
 function renderLookup(){
   app.innerHTML = `
     <div class="lookup">
@@ -188,9 +274,11 @@ function renderLookup(){
         <input id="cert-input" type="text" placeholder="TS-2026-0007" autocomplete="off" autocapitalize="characters">
         <button id="cert-go">Verify</button>
       </div>
+      ${scanButtonHTML()}
     </div>
   `;
   wireLookup();
+  wireScanButton();
 }
 
 function wireLookup(){
@@ -200,6 +288,11 @@ function wireLookup(){
   const go = () => { const v = input.value.trim(); if(v) goTo(v); };
   btn.addEventListener('click', go);
   input.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+
+function wireScanButton(){
+  const btn = document.getElementById('scan-open');
+  if(btn) btn.addEventListener('click', openScanner);
 }
 
 function renderNotFound(id){
@@ -212,9 +305,11 @@ function renderNotFound(id){
         <input id="cert-input" type="text" placeholder="TS-2026-0007" autocomplete="off">
         <button id="cert-go">Verify</button>
       </div>
+      ${scanButtonHTML()}
     </div>
   `;
   wireLookup();
+  wireScanButton();
 }
 
 function renderError(){
@@ -353,6 +448,122 @@ async function init(){
 }
 
 init();
+
+// ============================================================================
+// QR camera scanner
+// ============================================================================
+let scannerStream = null;
+let scannerRAF = null;
+let scannerCanvas = null;
+let scannerCtx = null;
+
+function extractCertId(text){
+  if(!text) return null;
+  text = text.trim();
+  try{
+    const u = new URL(text);
+    const fromParam = u.searchParams.get('id');
+    if(fromParam) return fromParam.trim();
+  }catch(e){
+    // not a URL — fall through
+  }
+  // Accept a bare certificate ID too (e.g. "TS-2026-0007")
+  if(/^[A-Za-z0-9][A-Za-z0-9\-_.]{2,60}$/.test(text)) return text;
+  return null;
+}
+
+function setScannerStatus(msg, kind){
+  const el = document.getElementById('scanner-status');
+  if(!el) return;
+  el.textContent = msg;
+  el.className = 'scanner-status' + (kind ? ' ' + kind : '');
+}
+
+async function openScanner(){
+  const overlay = document.getElementById('scanner-overlay');
+  const video = document.getElementById('scanner-video');
+  overlay.classList.add('show');
+  setScannerStatus('Requesting camera access…');
+
+  if(!window.jsQR){
+    setScannerStatus('QR scanner failed to load. Please enter the ID manually.', 'err');
+    return;
+  }
+
+  try{
+    scannerStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' } },
+      audio: false
+    });
+    video.srcObject = scannerStream;
+    await video.play();
+    setScannerStatus('Point your camera at the QR code on the certificate.');
+
+    scannerCanvas = document.createElement('canvas');
+    scannerCtx = scannerCanvas.getContext('2d', { willReadFrequently: true });
+    scannerRAF = requestAnimationFrame(scanFrame);
+  }catch(err){
+    console.error(err);
+    if(err && err.name === 'NotAllowedError'){
+      setScannerStatus('Camera permission denied. Allow camera access, or enter the ID manually.', 'err');
+    }else if(err && err.name === 'NotFoundError'){
+      setScannerStatus('No camera found on this device. Enter the ID manually instead.', 'err');
+    }else{
+      setScannerStatus('Could not start the camera. Enter the ID manually instead.', 'err');
+    }
+  }
+}
+
+function scanFrame(){
+  const video = document.getElementById('scanner-video');
+  if(!video || video.readyState !== video.HAVE_ENOUGH_DATA){
+    scannerRAF = requestAnimationFrame(scanFrame);
+    return;
+  }
+
+  scannerCanvas.width = video.videoWidth;
+  scannerCanvas.height = video.videoHeight;
+  scannerCtx.drawImage(video, 0, 0, scannerCanvas.width, scannerCanvas.height);
+  const imageData = scannerCtx.getImageData(0, 0, scannerCanvas.width, scannerCanvas.height);
+  const code = window.jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+
+  if(code && code.data){
+    const certId = extractCertId(code.data);
+    if(certId){
+      setScannerStatus('Found: ' + certId + ' — opening…', 'ok');
+      closeScanner();
+      goTo(certId);
+      return;
+    }else{
+      setScannerStatus("Scanned a code, but it isn't a recognized certificate link.", 'err');
+    }
+  }
+
+  scannerRAF = requestAnimationFrame(scanFrame);
+}
+
+function closeScanner(){
+  const overlay = document.getElementById('scanner-overlay');
+  const video = document.getElementById('scanner-video');
+  overlay.classList.remove('show');
+
+  if(scannerRAF) cancelAnimationFrame(scannerRAF);
+  scannerRAF = null;
+
+  if(scannerStream){
+    scannerStream.getTracks().forEach(t => t.stop());
+    scannerStream = null;
+  }
+  if(video) video.srcObject = null;
+}
+
+document.getElementById('scanner-close').addEventListener('click', closeScanner);
+document.getElementById('scanner-overlay').addEventListener('click', (e) => {
+  if(e.target.id === 'scanner-overlay') closeScanner();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') closeScanner();
+});
 </script>
 
 </body>
