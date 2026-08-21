@@ -294,8 +294,8 @@ async function loadApplications(){
 }
 
 function renderStats(){
-  document.getElementById('stat-pending').textContent = applications.filter(a => a.status !== 'completed').length;
-  document.getElementById('stat-completed').textContent = applications.filter(a => a.status === 'completed').length;
+  document.getElementById('stat-pending').textContent = applications.filter(a => !a.certificate_id).length;
+  document.getElementById('stat-completed').textContent = applications.filter(a => a.certificate_id).length;
 }
 
 function renderList(){
@@ -304,7 +304,7 @@ function renderList(){
 
   let list = applications;
   if(filter !== 'all'){
-    list = list.filter(a => filter === 'completed' ? a.status === 'completed' : a.status !== 'completed');
+    list = list.filter(a => filter === 'completed' ? Boolean(a.certificate_id) : !a.certificate_id);
   }
   if(search){
     list = list.filter(a =>
@@ -323,7 +323,7 @@ function renderList(){
   emptyMsg.style.display = 'none';
 
   container.innerHTML = list.map(a => {
-    const isCompleted = a.status === 'completed';
+    const isCompleted = Boolean(a.certificate_id);
     return `
       <div class="app-card">
         <div class="app-top">
