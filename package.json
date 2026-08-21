@@ -5,6 +5,8 @@
   "description": "DarkSyntax Internship Application Portal",
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
-    "resend": "^4.0.0"
+    "resend": "^4.0.0",
+    "pdfkit": "^0.15.0",
+    "qrcode": "^1.5.3"
   }
 }
