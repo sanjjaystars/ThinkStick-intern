@@ -92,9 +92,13 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: 'Failed to create certificate.' });
     }
 
+    // NOTE: applications.status has a CHECK constraint allowing only
+    // 'pending' | 'reviewed' | 'accepted' | 'rejected' — 'accepted' is used
+    // to mark a certified applicant. certificate_id is the real source of
+    // truth for "has a certificate been issued", not the status text.
     const { error: updateErr } = await supabase
       .from('applications')
-      .update({ status: 'completed', certificate_id: certId })
+      .update({ status: 'accepted', certificate_id: certId })
       .eq('id', application_id);
 
     if (updateErr) {
