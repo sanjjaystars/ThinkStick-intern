@@ -341,7 +341,8 @@ function renderList(){
         ${a.why ? `<div class="app-why">"${esc(a.why)}"</div>` : ''}
         <div class="app-actions">
           ${isCompleted
-            ? `<a class="cert-link" href="/verify?id=${encodeURIComponent(a.certificate_id)}" target="_blank">View certificate ${esc(a.certificate_id)} →</a>`
+            ? `<a class="cert-link" href="/verify?id=${encodeURIComponent(a.certificate_id)}" target="_blank">View certificate ${esc(a.certificate_id)} →</a>
+               <a class="cert-link" href="/api/certificate-file?id=${encodeURIComponent(a.certificate_id)}" target="_blank">Download PDF</a>`
             : `<button class="btn-gen" data-id="${a.id}" data-name="${esc(a.full_name)}">Generate certificate</button>`
           }
         </div>
