@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — DarkSyntax</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+<style>
+  :root {
+    --void: #0A0C0E; --panel: #12161A; --panel-2: #171C21;
+    --copper: #FFB000; --copper-dim: #7A5A1E; --teal: #00D9B5; --red: #FF5C5C;
+    --text: #F2EFE9; --muted: #8A8F94; --line: #22282E;
+    --disp: 'Space Grotesk', sans-serif; --body: 'Inter', sans-serif; --mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--void); color: var(--text); font-family: var(--body); min-height: 100vh; }
+  ::selection { background: var(--copper); color: #0A0C0E; }
+  .pcb-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(0,217,181,0.05), transparent 40%),
+      radial-gradient(circle at 85% 70%, rgba(255,176,0,0.06), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 42px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 42px);
+  }
+  nav {
+    position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 5vw; font-family: var(--mono); font-size: 13px;
+  }
+  nav .logo { font-family: var(--disp); font-weight: 700; font-size: 16px; letter-spacing: 2px; }
+  nav .logo span { color: var(--copper); }
+  #logout-btn {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    font-family: var(--mono); font-size: 12px; padding: 7px 14px; border-radius: 4px; cursor: pointer;
+    display: none;
+  }
+  #logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  main { position: relative; z-index: 1; padding: 0 5vw 80px; max-width: 1000px; margin: 0 auto; }
+
+  /* ---- login gate ---- */
+  .gate { max-width: 380px; margin: 80px auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 36px; text-align: center; }
+  .gate h1 { font-family: var(--disp); font-size: 22px; margin-bottom: 8px; }
+  .gate p { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+  .gate input {
+    width: 100%; background: var(--void); border: 1px solid var(--line); color: var(--text);
+    font-family: var(--mono); font-size: 14px; padding: 12px 14px; border-radius: 4px; margin-bottom: 14px;
+  }
+  .gate input:focus { outline: none; border-color: var(--copper); }
+  .gate button {
+    width: 100%; font-family: var(--mono); font-size: 13px; font-weight: 700; background: var(--copper);
+    color: #0A0C0E; border: none; border-radius: 4px; padding: 12px; cursor: pointer;
+  }
+  .gate button:hover { background: #ffc233; }
+  .gate .err { color: var(--red); font-family: var(--mono); font-size: 12px; margin-top: 12px; min-height: 16px; }
+
+  /* ---- dashboard ---- */
+  #dash { display: none; }
+  .dash-head { display: flex; align-items: center; justify-content: space-between; margin: 20px 0 24px; flex-wrap: wrap; gap: 12px; }
+  .dash-head h1 { font-family: var(--disp); font-size: 26px; }
+  .stat-row { display: flex; gap: 10px; font-family: var(--mono); font-size: 11.5px; }
+  .stat { border: 1px solid var(--line); border-radius: 20px; padding: 6px 13px; color: var(--muted); }
+  .stat b { color: var(--text); }
+  .stat.pending b { color: var(--copper); }
+  .stat.completed b { color: var(--teal); }
+
+  .toolbar { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .toolbar input {
+    flex: 1; min-width: 200px; background: var(--panel); border: 1px solid var(--line); color: var(--text);
+    font-family: var(--mono); font-size: 13px; padding: 10px 14px; border-radius: 4px;
+  }
+  .toolbar input:focus { outline: none; border-color: var(--copper); }
+  .toolbar select {
+    background: var(--panel); border: 1px solid var(--line); color: var(--text);
+    font-family: var(--mono); font-size: 13px; padding: 10px 14px; border-radius: 4px; cursor: pointer;
+  }
+
+  .app-list { display: flex; flex-direction: column; gap: 10px; }
+  .app-card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .app-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .app-name { font-family: var(--disp); font-size: 17px; font-weight: 600; }
+  .app-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); margin-top: 4px; line-height: 1.7; }
+  .app-meta a { color: var(--muted); }
+  .badge { font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .badge.pending { background: rgba(255,176,0,0.1); color: var(--copper); border: 1px solid rgba(255,176,0,0.35); }
+  .badge.completed { background: rgba(0,217,181,0.1); color: var(--teal); border: 1px solid rgba(0,217,181,0.35); }
+
+  .app-why { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 12px; max-width: 640px; }
+
+  .app-actions { margin-top: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .btn-gen {
+    font-family: var(--mono); font-size: 12.5px; font-weight: 700; background: var(--copper); color: #0A0C0E;
+    border: none; border-radius: 4px; padding: 9px 16px; cursor: pointer;
+  }
+  .btn-gen:hover { background: #ffc233; }
+  .cert-link {
+    font-family: var(--mono); font-size: 12px; color: var(--teal); text-decoration: none;
+    border: 1px solid rgba(0,217,181,0.35); border-radius: 4px; padding: 8px 14px;
+  }
+  .cert-link:hover { background: rgba(0,217,181,0.08); }
+
+  .empty { text-align: center; color: var(--muted); font-family: var(--mono); font-size: 13px; padding: 60px 0; }
+
+  /* ---- modal ---- */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100; background: rgba(10,12,14,0.85); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 28px;
+    width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+  }
+  .modal h3 { font-family: var(--disp); font-size: 20px; margin-bottom: 4px; }
+  .modal .sub { color: var(--muted); font-size: 12.5px; margin-bottom: 20px; }
+  .modal label {
+    display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; color: var(--copper);
+    margin-bottom: 6px; margin-top: 14px;
+  }
+  .modal label:first-of-type { margin-top: 0; }
+  .modal input, .modal select, .modal textarea {
+    width: 100%; background: var(--void); border: 1px solid var(--line); color: var(--text);
+    font-family: var(--mono); font-size: 13.5px; padding: 10px 12px; border-radius: 4px;
+  }
+  .modal input:focus, .modal select:focus, .modal textarea:focus { outline: none; border-color: var(--copper); }
+  .modal textarea { min-height: 70px; resize: vertical; font-family: var(--body); font-size: 13.5px; }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+  .modal-actions button {
+    flex: 1; font-family: var(--mono); font-size: 13px; font-weight: 700; border-radius: 4px; padding: 11px; cursor: pointer; border: none;
+  }
+  .btn-confirm { background: var(--copper); color: #0A0C0E; }
+  .btn-confirm:hover { background: #ffc233; }
+  .btn-confirm:disabled { opacity: 0.5; cursor: progress; }
+  .btn-cancel { background: transparent; border: 1px solid var(--line) !important; color: var(--muted); }
+  .btn-cancel:hover { border-color: var(--red) !important; color: var(--red); }
+  .modal-status { font-family: var(--mono); font-size: 12px; margin-top: 14px; min-height: 16px; }
+  .modal-status.err { color: var(--red); }
+  .modal-status.ok { color: var(--teal); }
+
+  @media (max-width:520px) { .modal-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="pcb-bg"></div>
+
+<nav>
+  <div class="logo">DARK<span>SYNTAX</span> <span style="color:var(--muted); font-size:11px;">/ admin</span></div>
+  <button id="logout-btn">logout</button>
+</nav>
+
+<main>
+  <div class="gate" id="gate">
+    <h1>Admin access</h1>
+    <p>Private — internship applications & certificate issuance.</p>
+    <input type="password" id="password-input" placeholder="Password" autocomplete="current-password">
+    <button id="login-btn">Unlock</button>
+    <div class="err" id="gate-err"></div>
+  </div>
+
+  <div id="dash">
+    <div class="dash-head">
+      <h1>Applicants</h1>
+      <div class="stat-row">
+        <span class="stat pending">PENDING <b id="stat-pending">0</b></span>
+        <span class="stat completed">CERTIFIED <b id="stat-completed">0</b></span>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="Search name, email, college, track…">
+      <select id="filter-status">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="completed">Certified</option>
+      </select>
+    </div>
+
+    <div class="app-list" id="app-list"></div>
+    <div class="empty" id="empty-msg" style="display:none;">No applicants match this filter.</div>
+  </div>
+</main>
+
+<!-- Generate certificate modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3>Generate certificate</h3>
+    <div class="sub" id="modal-sub"></div>
+
+    <label for="m-role">Role</label>
+    <select id="m-role">
+      <option>AI/ML Intern</option>
+      <option>Frontend / UI Intern</option>
+      <option>Firmware / Embedded Intern</option>
+      <option>Growth / Client Ops Intern</option>
+      <option value="__custom">Custom…</option>
+    </select>
+    <input type="text" id="m-role-custom" placeholder="Custom role title" style="margin-top:8px; display:none;">
+
+    <label for="m-project">Project / contribution</label>
+    <textarea id="m-project" placeholder="e.g. ThinkStick offline inference CLI — model loader & quantization pipeline"></textarea>
+
+    <label for="m-skills">Skills (comma-separated)</label>
+    <input type="text" id="m-skills" placeholder="Python, llama.cpp, GGUF quantization, CLI tooling">
+
+    <div class="modal-row">
+      <div>
+        <label for="m-start">Start date</label>
+        <input type="date" id="m-start">
+      </div>
+      <div>
+        <label for="m-end">End date</label>
+        <input type="date" id="m-end">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="modal-cancel">Cancel</button>
+      <button class="btn-confirm" id="modal-confirm">Generate</button>
+    </div>
+    <div class="modal-status" id="modal-status"></div>
+  </div>
+</div>
+
+<script>
+let applications = [];
+let activeAppId = null;
+
+const gate = document.getElementById('gate');
+const dash = document.getElementById('dash');
+const logoutBtn = document.getElementById('logout-btn');
+const passwordInput = document.getElementById('password-input');
+const loginBtn = document.getElementById('login-btn');
+const gateErr = document.getElementById('gate-err');
+
+function esc(s){ const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
+function fmtDate(iso){ if(!iso) return '—'; return new Date(iso).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }); }
+
+async function login(){
+  gateErr.textContent = '';
+  const password = passwordInput.value;
+  if(!password) return;
+  loginBtn.disabled = true;
+  try{
+    const res = await fetch('/api/admin/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password })
+    });
+    const result = await res.json();
+    if(!res.ok || !result.ok){
+      gateErr.textContent = result.error || 'Incorrect password';
+      loginBtn.disabled = false;
+      return;
+    }
+    showDashboard();
+  }catch(e){
+    gateErr.textContent = 'Could not reach server. Try again.';
+    loginBtn.disabled = false;
+  }
+}
+
+loginBtn.addEventListener('click', login);
+passwordInput.addEventListener('keydown', e => { if(e.key === 'Enter') login(); });
+
+logoutBtn.addEventListener('click', async () => {
+  await fetch('/api/admin/logout', { method: 'POST' });
+  location.reload();
+});
+
+async function showDashboard(){
+  gate.style.display = 'none';
+  dash.style.display = 'block';
+  logoutBtn.style.display = 'inline-block';
+  await loadApplications();
+}
+
+async function loadApplications(){
+  const res = await fetch('/api/admin/applications');
+  if(res.status === 401){
+    dash.style.display = 'none';
+    logoutBtn.style.display = 'none';
+    gate.style.display = 'block';
+    return;
+  }
+  const result = await res.json();
+  if(!result.ok) return;
+  applications = result.applications || [];
+  renderStats();
+  renderList();
+}
+
+function renderStats(){
+  document.getElementById('stat-pending').textContent = applications.filter(a => a.status !== 'completed').length;
+  document.getElementById('stat-completed').textContent = applications.filter(a => a.status === 'completed').length;
+}
+
+function renderList(){
+  const search = document.getElementById('search').value.trim().toLowerCase();
+  const filter = document.getElementById('filter-status').value;
+
+  let list = applications;
+  if(filter !== 'all'){
+    list = list.filter(a => filter === 'completed' ? a.status === 'completed' : a.status !== 'completed');
+  }
+  if(search){
+    list = list.filter(a =>
+      [a.full_name, a.email, a.college, a.track].filter(Boolean).join(' ').toLowerCase().includes(search)
+    );
+  }
+
+  const container = document.getElementById('app-list');
+  const emptyMsg = document.getElementById('empty-msg');
+
+  if(list.length === 0){
+    container.innerHTML = '';
+    emptyMsg.style.display = 'block';
+    return;
+  }
+  emptyMsg.style.display = 'none';
+
+  container.innerHTML = list.map(a => {
+    const isCompleted = a.status === 'completed';
+    return `
+      <div class="app-card">
+        <div class="app-top">
+          <div>
+            <div class="app-name">${esc(a.full_name)}</div>
+            <div class="app-meta">
+              ${esc(a.email)} · ${esc(a.phone || '—')}<br>
+              ${esc(a.college || '—')} · ${esc(a.year || '—')}${a.branch ? ' · ' + esc(a.branch) : ''}<br>
+              Track: ${esc(a.track || '—')} · Applied ${fmtDate(a.created_at)}
+              ${a.links ? `<br>Links: ${esc(a.links)}` : ''}
+            </div>
+          </div>
+          <span class="badge ${isCompleted ? 'completed' : 'pending'}">${isCompleted ? 'CERTIFIED' : 'PENDING'}</span>
+        </div>
+        ${a.why ? `<div class="app-why">"${esc(a.why)}"</div>` : ''}
+        <div class="app-actions">
+          ${isCompleted
+            ? `<a class="cert-link" href="/verify?id=${encodeURIComponent(a.certificate_id)}" target="_blank">View certificate ${esc(a.certificate_id)} →</a>`
+            : `<button class="btn-gen" data-id="${a.id}" data-name="${esc(a.full_name)}">Generate certificate</button>`
+          }
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.btn-gen').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.id, btn.dataset.name));
+  });
+}
+
+document.getElementById('search').addEventListener('input', renderList);
+document.getElementById('filter-status').addEventListener('change', renderList);
+
+// ---- modal ----
+const overlay = document.getElementById('modal-overlay');
+const roleSelect = document.getElementById('m-role');
+const roleCustom = document.getElementById('m-role-custom');
+
+roleSelect.addEventListener('change', () => {
+  roleCustom.style.display = roleSelect.value === '__custom' ? 'block' : 'none';
+});
+
+function openModal(appId, name){
+  activeAppId = appId;
+  document.getElementById('modal-sub').textContent = `For ${name}`;
+  document.getElementById('m-role').value = 'AI/ML Intern';
+  roleCustom.style.display = 'none';
+  roleCustom.value = '';
+  document.getElementById('m-project').value = '';
+  document.getElementById('m-skills').value = '';
+  document.getElementById('m-start').value = '';
+  document.getElementById('m-end').value = '';
+  document.getElementById('modal-status').textContent = '';
+  document.getElementById('modal-status').className = 'modal-status';
+  overlay.classList.add('show');
+}
+
+function closeModal(){
+  overlay.classList.remove('show');
+  activeAppId = null;
+}
+
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
+
+document.getElementById('modal-confirm').addEventListener('click', async () => {
+  const role = roleSelect.value === '__custom' ? roleCustom.value.trim() : roleSelect.value;
+  const project = document.getElementById('m-project').value.trim();
+  const skills = document.getElementById('m-skills').value.trim();
+  const start_date = document.getElementById('m-start').value;
+  const end_date = document.getElementById('m-end').value;
+
+  const statusEl = document.getElementById('modal-status');
+
+  if(!role || !project || !skills || !start_date || !end_date){
+    statusEl.textContent = 'Fill in every field.';
+    statusEl.className = 'modal-status err';
+    return;
+  }
+  if(new Date(end_date) < new Date(start_date)){
+    statusEl.textContent = 'End date must be after start date.';
+    statusEl.className = 'modal-status err';
+    return;
+  }
+
+  const confirmBtn = document.getElementById('modal-confirm');
+  confirmBtn.disabled = true;
+  statusEl.textContent = 'Generating…';
+  statusEl.className = 'modal-status';
+
+  try{
+    const res = await fetch('/api/admin/issue-certificate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ application_id: activeAppId, role, project, skills, start_date, end_date })
+    });
+    const result = await res.json();
+    if(!res.ok || !result.ok){
+      throw new Error(result.error || 'Failed to generate certificate');
+    }
+    statusEl.textContent = `Issued ${result.certificate_id} ✓`;
+    statusEl.className = 'modal-status ok';
+    await loadApplications();
+    setTimeout(closeModal, 1200);
+  }catch(e){
+    statusEl.textContent = e.message;
+    statusEl.className = 'modal-status err';
+  }finally{
+    confirmBtn.disabled = false;
+  }
+});
+
+// ---- boot: check existing session ----
+(async function init(){
+  const res = await fetch('/api/admin/applications');
+  if(res.status === 401){
+    gate.style.display = 'block';
+  }else if(res.ok){
+    const result = await res.json();
+    if(result.ok){
+      applications = result.applications || [];
+      dash.style.display = 'block';
+      logoutBtn.style.display = 'inline-block';
+      renderStats();
+      renderList();
+    }else{
+      gate.style.display = 'block';
+    }
+  }else{
+    gate.style.display = 'block';
+  }
+})();
+</script>
+
+</body>
+</html>
