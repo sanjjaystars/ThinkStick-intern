@@ -339,6 +339,7 @@ function renderCert(cert){
     certId: cert.id,
   });
   const linkedinUrl = 'https://www.linkedin.com/profile/add?' + linkedinParams.toString();
+  const downloadUrl = '/api/certificate-file?id=' + encodeURIComponent(cert.id);
 
   app.innerHTML = `
     <div class="card">
@@ -388,7 +389,7 @@ function renderCert(cert){
 
         <div class="actions">
           <a class="btn btn-linkedin" href="${linkedinUrl}" target="_blank" rel="noopener">+ Add to LinkedIn profile</a>
-          ${cert.cert_pdf_url ? `<a class="btn btn-ghost" href="${esc(cert.cert_pdf_url)}" target="_blank" rel="noopener">Download certificate</a>` : ''}
+          <a class="btn btn-ghost" href="${downloadUrl}" target="_blank" rel="noopener">Download certificate (PDF)</a>
           <button class="btn btn-ghost" id="copy-link">Copy verification link</button>
         </div>
       </div>
