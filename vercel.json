@@ -1,7 +1,8 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/verify", "destination": "/verify.html" }
+    { "source": "/verify", "destination": "/verify.html" },
+    { "source": "/admin", "destination": "/admin.html" }
   ],
   "headers": [
     {
