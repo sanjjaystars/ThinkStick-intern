@@ -7,17 +7,16 @@ function cleanSupabaseUrl(url) {
   return url.trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
 }
 
-function fmtDate(d) {
+function fmtLongDate(d) {
   if (!d) return '—';
   const dt = new Date(d + 'T00:00:00');
-  return dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  return dt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-function monthsBetween(start, end) {
-  const s = new Date(start), e = new Date(end);
-  let m = (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth());
-  if (e.getDate() < s.getDate()) m -= 1;
-  return Math.max(m, 1);
+function fmtShortDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
 export default async function handler(req, res) {
@@ -56,83 +55,120 @@ export default async function handler(req, res) {
     const qrBuffer = await QRCode.toBuffer(verifyUrl, {
       margin: 1,
       width: 300,
-      color: { dark: '#0A0C0E', light: '#F2EFE9' }
+      color: { dark: '#1E1E1E', light: '#FAF5EF' }
     });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${cert.id}.pdf"`);
 
-    const doc = new PDFDocument({ size: [1000, 707], margin: 0 });
+    const CREAM = '#FAF5EF';
+    const BLACK = '#1E1E1E';
+    const ORANGE = '#E15B33';
+    const ORANGE_LIGHT = '#F0A63F';
+    const RED_DARK = '#C23B2B';
+    const MUTED = '#7A7570';
+    const LINE = '#DED6C8';
+
+    const W = 1000, H = 707;
+    const doc = new PDFDocument({ size: [W, H], margin: 0 });
     doc.pipe(res);
 
-    const VOID = '#0A0C0E', PANEL = '#12161A', COPPER = '#FFB000', COPPER_DIM = '#7A5A1E',
-          TEAL = '#00D9B5', TEXT = '#F2EFE9', MUTED = '#8A8F94', LINE = '#22282E';
+    doc.rect(0, 0, W, H).fill(CREAM);
 
-    const DISP = 'Helvetica-Bold';
-    const MONO = 'Courier';
-    const MONO_B = 'Courier-Bold';
+    function diamond(cx, cy, size, fillColor, strokeColor, strokeOnly) {
+      doc.save();
+      doc.rotate(45, { origin: [cx, cy] });
+      const r = doc.roundedRect(cx - size / 2, cy - size / 2, size, size, size * 0.08);
+      if (strokeOnly) {
+        r.lineWidth(2.5).stroke(strokeColor);
+      } else {
+        r.fill(fillColor);
+      }
+      doc.restore();
+    }
 
-    doc.rect(0, 0, 1000, 707).fill(VOID);
+    doc.save();
+    doc.rect(860, 0, 140, H).clip();
+    diamond(950, 40, 130, RED_DARK, null, false);
+    diamond(870, 130, 90, ORANGE_LIGHT, null, false);
+    diamond(960, 230, 70, null, ORANGE, true);
+    diamond(880, 320, 110, null, RED_DARK, true);
+    diamond(970, 420, 60, ORANGE_LIGHT, null, false);
+    diamond(890, 500, 85, null, ORANGE, true);
+    diamond(960, 590, 100, RED_DARK, null, false);
+    diamond(880, 670, 70, ORANGE_LIGHT, null, false);
+    doc.restore();
 
-    doc.roundedRect(23, 23, 954, 661, 8).lineWidth(1).stroke(LINE);
-    doc.roundedRect(45, 45, 910, 617, 5).lineWidth(1).stroke(COPPER_DIM);
+    const marginX = 70;
+    doc.font('Helvetica-Bold').fontSize(46).fillColor(BLACK);
+    doc.text('Certificate', marginX, 52);
+    doc.fillColor(ORANGE);
+    doc.text('of Internship', marginX, 104);
 
-    const centerText = (text, y, font, size, color, opts = {}) => {
-      doc.font(font).fontSize(size).fillColor(color);
-      const w = doc.widthOfString(text);
-      doc.text(text, (1000 - w) / 2, y, opts);
-    };
+    doc.font('Helvetica').fontSize(13).fillColor(MUTED);
+    doc.text('This is to certify that', marginX, 178);
 
-    centerText('THINKSTICK', 66, DISP, 30, TEXT);
-    centerText('OFFLINE AI  ·  ON A DRIVE', 106, MONO, 9, TEAL);
-    centerText('a product of DarkSyntax', 120, MONO, 9, MUTED);
+    doc.font('Helvetica-Bold').fontSize(32).fillColor(BLACK);
+    doc.text(cert.intern_name, marginX, 200);
 
-    doc.moveTo(455, 146).lineTo(545, 146).lineWidth(1).stroke(COPPER_DIM);
+    const nameWidth = doc.widthOfString(cert.intern_name);
+    doc.moveTo(marginX, 250).lineTo(Math.max(marginX + nameWidth + 200, 560), 250).lineWidth(1).stroke(LINE);
 
-    centerText('[ OK ]  CERTIFICATE OF INTERNSHIP COMPLETION', 160, MONO_B, 11, COPPER);
-    centerText('This certifies that', 198, MONO, 11, MUTED);
-    centerText(cert.intern_name, 220, DISP, 32, TEXT);
+    const paraWidth = 640;
+    const paraY = 278;
+    doc.font('Helvetica').fontSize(13.5).fillColor(BLACK);
+    doc.text('Has successfully completed the internship at ', marginX, paraY, { continued: true, width: paraWidth, lineGap: 6 });
+    doc.font('Helvetica-Bold').fillColor(ORANGE);
+    doc.text('DarkSyntax', { continued: true });
+    doc.font('Helvetica').fillColor(BLACK);
+    doc.text(' from ', { continued: true });
+    doc.font('Helvetica-Bold').fillColor(ORANGE);
+    doc.text(`${fmtLongDate(cert.start_date)} to ${fmtLongDate(cert.end_date)}`, { continued: true });
+    doc.font('Helvetica').fillColor(BLACK);
+    doc.text(', in the field of ', { continued: true });
+    doc.font('Helvetica-Bold').fillColor(ORANGE);
+    doc.text(cert.role, { continued: true });
+    doc.font('Helvetica').fillColor(BLACK);
+    doc.text('.');
 
-    const nameW = doc.font(DISP).fontSize(32).widthOfString(cert.intern_name);
-    doc.moveTo(500 - nameW / 2 - 15, 262).lineTo(500 + nameW / 2 + 15, 262).lineWidth(1.5).stroke(COPPER);
+    const skills = (cert.skills || '').split(',').map(s => s.trim()).filter(Boolean);
+    doc.font('Helvetica').fontSize(12.5).fillColor(MUTED);
+    doc.text('Worked with tools & skills including:', marginX, 348);
 
-    centerText('has successfully completed an internship as', 282, MONO, 11, MUTED);
-    centerText(cert.role, 302, MONO_B, 13, TEAL);
-    centerText('at DarkSyntax, contributing to:', 324, MONO, 11, MUTED);
+    let tagX = marginX, tagY = 376;
+    const tagH = 30, tagGap = 10, maxX = marginX + 640;
+    doc.font('Helvetica').fontSize(11.5);
+    skills.forEach(skill => {
+      const tw = doc.widthOfString(skill) + 28;
+      if (tagX + tw > maxX) { tagX = marginX; tagY += tagH + tagGap; }
+      doc.roundedRect(tagX, tagY, tw, tagH, tagH / 2).lineWidth(1.3).stroke(ORANGE);
+      doc.fillColor(BLACK).text(skill, tagX + 14, tagY + 9);
+      tagX += tw + tagGap;
+    });
 
-    doc.roundedRect(150, 350, 700, 50, 5).fillAndStroke(PANEL, COPPER_DIM);
-    doc.font(MONO).fontSize(10).fillColor(COPPER);
-    doc.text(cert.project, 175, 366, { width: 650, align: 'center' });
+    const footerY = 560;
+    doc.moveTo(marginX, footerY).lineTo(marginX + 160, footerY).lineWidth(1).stroke(LINE);
+    doc.font('Helvetica-Bold').fontSize(13).fillColor(BLACK).text(cert.mentor || 'SANJJAY', marginX, footerY + 12);
+    doc.font('Helvetica').fontSize(11).fillColor(MUTED).text('Founder, DarkSyntax', marginX, footerY + 30);
 
-    const dur = monthsBetween(cert.start_date, cert.end_date);
-    centerText(
-      `Duration: ${fmtDate(cert.start_date)}  -  ${fmtDate(cert.end_date)}   (${dur} Month${dur !== 1 ? 's' : ''})`,
-      420, MONO, 11, TEXT
-    );
-    centerText(`Skills: ${cert.skills}`, 440, MONO, 9, MUTED);
+    const col2X = marginX + 230;
+    doc.moveTo(col2X, footerY).lineTo(col2X + 160, footerY).lineWidth(1).stroke(LINE);
+    doc.font('Helvetica-Bold').fontSize(13).fillColor(BLACK).text(cert.udyam_no || 'UDYAM-PY-03-0058394', col2X, footerY + 12);
+    doc.font('Helvetica').fontSize(11).fillColor(MUTED).text('Udyam Registration No.', col2X, footerY + 30);
 
-    const footerY = 510;
-    doc.moveTo(80, footerY).lineTo(920, footerY).lineWidth(1).stroke(LINE);
+    const col3X = marginX + 460;
+    doc.font('Helvetica').fontSize(11.5).fillColor(MUTED).text('Date of issue', col3X, footerY - 4);
+    doc.font('Helvetica-Bold').fontSize(13).fillColor(BLACK).text(fmtShortDate(cert.issued_at || cert.created_at), col3X, footerY + 12);
+    doc.font('Helvetica').fontSize(11.5).fillColor(MUTED).text('Certificate ID', col3X, footerY + 34);
+    doc.font('Helvetica-Bold').fontSize(13).fillColor(ORANGE).text(cert.id, col3X, footerY + 50);
 
-    doc.font(MONO_B).fontSize(11).fillColor(TEXT).text(cert.mentor || 'SANJJAY - Founder, DarkSyntax', 80, footerY + 22);
-    doc.font(MONO).fontSize(9).fillColor(MUTED).text('Verified Mentor / Issuing Authority', 80, footerY + 40);
-    doc.text(`Udyam Reg. No. ${cert.udyam_no || 'UDYAM-PY-03-0058394'}`, 80, footerY + 56);
-    doc.font(MONO_B).fillColor(COPPER).text('darksyntax.xyz', 80, footerY + 72);
-
-    centerText('CERTIFICATE ID', footerY + 18, MONO, 9, MUTED);
-    centerText(cert.id, footerY + 33, MONO_B, 15, COPPER);
-    centerText('ISSUED', footerY + 60, MONO, 9, MUTED);
-    centerText(fmtDate((cert.issued_at || cert.created_at || '').slice(0, 10)), footerY + 74, MONO, 10, TEXT);
-
-    doc.image(qrBuffer, 800, footerY + 8, { width: 90, height: 90 });
-    doc.font(MONO).fontSize(8).fillColor(MUTED).text('SCAN TO VERIFY', 800, footerY + 102, { width: 90, align: 'center' });
-
-    centerText(verifyUrl, 635, MONO, 9, MUTED);
+    doc.image(qrBuffer, 790, footerY - 6, { width: 62, height: 62 });
+    doc.font('Helvetica').fontSize(8).fillColor(MUTED).text('Scan to verify', 780, footerY + 58, { width: 82, align: 'center' });
 
     if (cert.status === 'revoked') {
       doc.save();
       doc.rotate(-18, { origin: [500, 353] });
-      doc.font(DISP).fontSize(70).fillColor('#FF5C5C').opacity(0.28);
+      doc.font('Helvetica-Bold').fontSize(70).fillColor(RED_DARK).opacity(0.25);
       const revW = doc.widthOfString('REVOKED');
       doc.text('REVOKED', 500 - revW / 2, 320);
       doc.restore();
