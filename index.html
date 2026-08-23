@@ -7,23 +7,25 @@
     <title>Internship at DarkSyntax — Apply</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --void: #0A0C0E;
-            --panel: #12161A;
-            --panel-2: #171C21;
-            --copper: #FFB000;
-            --copper-dim: #7A5A1E;
-            --teal: #00D9B5;
-            --red: #FF5C5C;
-            --text: #F2EFE9;
-            --muted: #8A8F94;
-            --line: #22282E;
-            --disp: 'Space Grotesk', sans-serif;
-            --body: 'Inter', sans-serif;
-            --mono: 'JetBrains Mono', monospace;
+            --bg: #F3F2EF;
+            --surface: #FFFFFF;
+            --border: #D9DDE1;
+            --border-strong: #C1C7CD;
+            --text: #1A1D21;
+            --muted: #5E6B7A;
+            --primary: #0A66C2;
+            --primary-hover: #084E96;
+            --primary-soft: #EAF3FC;
+            --success: #057642;
+            --success-soft: #E9F5EE;
+            --danger: #B3261E;
+            --danger-soft: #FDEDEC;
+            --radius: 8px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         * {
@@ -37,259 +39,219 @@
         }
 
         body {
-            background: var(--void);
+            background: var(--bg);
             color: var(--text);
-            font-family: var(--body);
-            overflow-x: hidden;
+            font-family: var(--font);
+            line-height: 1.5;
         }
 
         ::selection {
-            background: var(--copper);
-            color: #0A0C0E;
-        }
-
-        .pcb-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                radial-gradient(circle at 15% 20%, rgba(0, 217, 181, 0.05), transparent 40%),
-                radial-gradient(circle at 85% 70%, rgba(255, 176, 0, 0.06), transparent 45%),
-                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0px, rgba(255, 255, 255, 0.012) 1px, transparent 1px, transparent 42px),
-                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.012) 0px, rgba(255, 255, 255, 0.012) 1px, transparent 1px, transparent 42px);
-        }
-
-        section,
-        header,
-        footer {
-            position: relative;
-            z-index: 1;
+            background: var(--primary-soft);
+            color: var(--primary);
         }
 
         nav {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 22px 5vw;
-            font-family: var(--mono);
-            font-size: 13px;
-            letter-spacing: 1px;
+            padding: 16px 5vw;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
         }
 
         nav .logo {
-            font-family: var(--disp);
-            font-weight: 700;
-            font-size: 16px;
-            letter-spacing: 2px;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: -0.3px;
+            color: var(--text);
         }
 
         nav .logo span {
-            color: var(--copper);
-        }
-
-        nav .sub {
-            color: var(--muted);
-            font-size: 11px;
+            color: var(--primary);
         }
 
         nav .nav-right {
             display: flex;
             align-items: center;
-            gap: 22px;
+            gap: 20px;
+        }
+
+        nav .sub {
+            color: var(--muted);
+            font-size: 13px;
         }
 
         .nav-verify {
-            font-family: var(--mono);
-            font-size: 11.5px;
-            letter-spacing: 0.5px;
-            color: var(--teal);
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--primary);
             text-decoration: none;
-            border: 1px solid rgba(0, 217, 181, 0.35);
+            border: 1px solid var(--primary);
             border-radius: 20px;
-            padding: 6px 13px;
-            transition: background .2s ease, color .2s ease, border-color .2s ease;
+            padding: 6px 14px;
+            transition: background .15s ease;
         }
 
         .nav-verify:hover {
-            background: rgba(0, 217, 181, 0.08);
-            border-color: var(--teal);
+            background: var(--primary-soft);
         }
 
         .hero {
-            padding: 60px 5vw 40px;
-            max-width: 760px;
+            padding: 56px 5vw 32px;
+            max-width: 720px;
         }
 
         .eyebrow {
-            font-family: var(--mono);
-            font-size: 12px;
-            letter-spacing: 3px;
-            color: var(--teal);
-            margin-bottom: 18px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            color: var(--primary);
+            margin-bottom: 14px;
             display: block;
+            text-transform: uppercase;
         }
 
         h1 {
-            font-family: var(--disp);
-            font-weight: 700;
-            font-size: clamp(32px, 5vw, 56px);
-            line-height: 1.06;
-            letter-spacing: -0.5px;
-            margin-bottom: 22px;
+            font-weight: 800;
+            font-size: clamp(28px, 4.2vw, 42px);
+            line-height: 1.15;
+            letter-spacing: -0.6px;
+            margin-bottom: 18px;
+            color: var(--text);
         }
 
         h1 .accent {
-            color: var(--copper);
+            color: var(--primary);
         }
 
         .lede {
             font-size: 16px;
-            line-height: 1.65;
+            line-height: 1.6;
             color: var(--muted);
             max-width: 560px;
-            margin-bottom: 34px;
+            margin-bottom: 28px;
         }
 
         .role-strip {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 4px;
         }
 
         .role-chip {
-            font-family: var(--mono);
-            font-size: 11.5px;
-            letter-spacing: 0.5px;
-            border: 1px solid var(--line);
+            font-size: 13px;
+            border: 1px solid var(--border-strong);
+            background: var(--surface);
             border-radius: 20px;
-            padding: 7px 14px;
+            padding: 6px 14px;
             color: var(--muted);
         }
 
         .role-chip b {
             color: var(--text);
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        /* ---------- terminal application shell ---------- */
+        /* ---------- application card ---------- */
         .app-wrap {
-            max-width: 760px;
-            margin: 50px 5vw 140px;
+            max-width: 720px;
+            margin: 36px 5vw 100px;
         }
 
         .term {
-            background: #08090A;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 8px rgba(16, 24, 40, 0.04);
             overflow: hidden;
         }
 
         .term-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--line);
-            background: var(--panel);
-        }
-
-        .term-bar .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--line);
-        }
-
-        .term-bar .dot:nth-child(1) {
-            background: #4a4f55;
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
         }
 
         .term-bar .title {
-            margin-left: 8px;
-            font-family: var(--mono);
-            font-size: 11.5px;
-            color: var(--muted);
-            letter-spacing: 0.5px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text);
         }
 
         .term-body {
-            padding: 30px 32px 34px;
+            padding: 28px;
         }
 
         .boot-line {
-            font-family: var(--mono);
-            font-size: 12.5px;
-            color: var(--copper-dim);
-            margin-bottom: 6px;
+            font-size: 13.5px;
+            color: var(--muted);
+            margin-bottom: 4px;
         }
 
         .boot-line.ok {
-            color: var(--teal);
+            color: var(--muted);
         }
 
         .boot-line .path {
-            color: var(--copper);
+            color: var(--primary);
+            font-weight: 600;
         }
 
         .boot-rule {
             height: 1px;
-            background: var(--line);
-            margin: 18px 0 26px;
+            background: var(--border);
+            margin: 16px 0 22px;
         }
 
         .field {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .field label {
             display: block;
-            font-family: var(--mono);
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            color: var(--copper);
-            margin-bottom: 9px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 7px;
         }
 
         .field label .req {
-            color: var(--red);
+            color: var(--danger);
             margin-left: 2px;
         }
 
         .field label .hint {
             color: var(--muted);
             font-weight: 400;
-            margin-left: 8px;
-            letter-spacing: 0;
+            margin-left: 6px;
         }
 
         .prompt-input,
         select,
         textarea {
             width: 100%;
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 4px;
+            background: var(--surface);
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
             color: var(--text);
-            font-family: var(--mono);
-            font-size: 14px;
-            padding: 12px 14px;
+            font-family: var(--font);
+            font-size: 14.5px;
+            padding: 11px 13px;
             outline: none;
-            transition: border-color .2s ease, background .2s ease;
+            transition: border-color .15s ease, box-shadow .15s ease;
         }
 
         .prompt-input::placeholder,
         textarea::placeholder {
-            color: #4b5157;
+            color: #9AA4AD;
         }
 
         .prompt-input:focus,
         select:focus,
         textarea:focus {
-            border-color: var(--copper);
-            background: #14181d;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
         }
 
         textarea {
@@ -302,20 +264,16 @@
             appearance: none;
             -webkit-appearance: none;
             cursor: pointer;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%238A8F94' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%235E6B7A' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
             padding-right: 34px;
         }
 
-        select option {
-            background: var(--panel);
-        }
-
         .field-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
+            gap: 16px;
         }
 
         @media (max-width:620px) {
@@ -325,17 +283,16 @@
         }
 
         .field-err {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--red);
-            margin-top: 7px;
+            font-size: 12px;
+            color: var(--danger);
+            margin-top: 6px;
             display: none;
         }
 
         .field.invalid .prompt-input,
         .field.invalid select,
         .field.invalid textarea {
-            border-color: var(--red);
+            border-color: var(--danger);
         }
 
         .field.invalid .field-err {
@@ -345,48 +302,42 @@
         .submit-row {
             display: flex;
             align-items: center;
-            gap: 18px;
-            margin-top: 8px;
+            gap: 16px;
+            margin-top: 4px;
             flex-wrap: wrap;
         }
 
         .btn-submit {
-            font-family: var(--mono);
-            font-size: 13.5px;
-            letter-spacing: 0.5px;
+            font-size: 14.5px;
             font-weight: 700;
-            background: var(--copper);
-            color: #0A0C0E;
+            background: var(--primary);
+            color: #fff;
             border: none;
-            border-radius: 3px;
-            padding: 14px 28px;
+            border-radius: 24px;
+            padding: 12px 28px;
             cursor: pointer;
-            transition: transform .2s ease, background .2s ease;
+            transition: background .15s ease;
         }
 
         .btn-submit:hover {
-            transform: translateY(-2px);
-            background: #ffc233;
+            background: var(--primary-hover);
         }
 
         .btn-submit:disabled {
-            opacity: 0.5;
+            opacity: 0.55;
             cursor: progress;
-            transform: none;
         }
 
         .submit-note {
-            font-family: var(--mono);
-            font-size: 11.5px;
+            font-size: 12.5px;
             color: var(--muted);
         }
 
         .status-msg {
-            font-family: var(--mono);
-            font-size: 12.5px;
-            margin-top: 18px;
+            font-size: 13px;
+            margin-top: 16px;
             display: none;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
         .status-msg.show {
@@ -394,17 +345,18 @@
         }
 
         .status-msg.err {
-            color: var(--red);
+            color: var(--danger);
         }
 
         .status-msg.ok {
-            color: var(--teal);
+            color: var(--success);
         }
 
         /* ---------- success screen ---------- */
         .success {
             display: none;
-            padding: 30px 32px 36px;
+            padding: 28px;
+            text-align: left;
         }
 
         .success.show {
@@ -412,10 +364,10 @@
         }
 
         .success .ok-tag {
-            font-family: var(--mono);
-            font-size: 12px;
-            letter-spacing: 1.5px;
-            color: var(--teal);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: var(--success);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -423,33 +375,41 @@
         }
 
         .success .ok-tag::before {
-            content: "●";
-            font-size: 8px;
+            content: "✓";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--success);
+            color: #fff;
+            font-size: 11px;
         }
 
         .success h3 {
-            font-family: var(--disp);
-            font-size: 24px;
-            margin-bottom: 14px;
+            font-weight: 800;
+            font-size: 22px;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
         }
 
         .success p {
             color: var(--muted);
             font-size: 14.5px;
-            line-height: 1.7;
+            line-height: 1.65;
             margin-bottom: 10px;
             max-width: 480px;
         }
 
         .success .ref {
-            font-family: var(--mono);
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text);
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 4px;
-            padding: 12px 14px;
-            margin-top: 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-top: 12px;
             display: inline-block;
         }
 
@@ -457,12 +417,11 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0 32px;
-            font-family: var(--mono);
-            font-size: 12px;
-            max-width: 760px;
+            font-size: 13px;
+            max-width: 720px;
             margin: 0 5vw 60px;
             padding-top: 20px;
-            border-top: 1px solid var(--line);
+            border-top: 1px solid var(--border);
         }
 
         @media (max-width:700px) {
@@ -475,8 +434,10 @@
         .info-strip .k {
             color: var(--muted);
             display: block;
-            font-size: 10.5px;
-            letter-spacing: 1px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
             margin-bottom: 5px;
         }
 
@@ -485,19 +446,20 @@
         }
 
         footer {
-            border-top: 1px solid var(--line);
-            padding: 32px 5vw;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+            padding: 28px 5vw;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
-            font-family: var(--mono);
-            font-size: 12px;
+            font-size: 12.5px;
             color: var(--muted);
         }
 
         footer .brand {
             color: var(--text);
+            font-weight: 600;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -511,18 +473,16 @@
 
 <body>
 
-    <div class="pcb-bg"></div>
-
     <nav>
         <div class="logo">DARK<span>SYNTAX</span></div>
         <div class="nav-right">
             <div class="sub">internships</div>
-            <a class="nav-verify" href="/verify">verify certificate →</a>
+            <a class="nav-verify" href="/verify">Verify certificate →</a>
         </div>
     </nav>
 
     <header class="hero">
-        <span class="eyebrow">DARKSYNTAX &middot; INTERNSHIP PROGRAM</span>
+        <span class="eyebrow">DarkSyntax · Internship Program</span>
         <h1>Build the things<br>we're <span class="accent">actually shipping.</span></h1>
         <p class="lede">We're a small team building ThinkStick — offline AI hardware — and running client work through
             DarkSyntax. Interns work directly on live builds, not busywork. Pick the track that fits and apply below.
@@ -538,25 +498,24 @@
     <div class="app-wrap">
         <div class="term">
             <div class="term-bar">
-                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-                <span class="title">C:\DARKSYNTAX\INTERN&gt; register.exe</span>
+                <span class="title">Internship Application</span>
             </div>
 
             <div class="term-body" id="formStage">
-                <div class="boot-line">INTERNSHIP APPLICATION — <span class="path">DarkSyntax / ThinkStick</span></div>
-                <div class="boot-line ok">fields required: name, email, college, track</div>
+                <div class="boot-line">Applying to <span class="path">DarkSyntax / ThinkStick</span></div>
+                <div class="boot-line ok">Fields marked * are required</div>
                 <div class="boot-rule"></div>
 
                 <form id="internForm" novalidate>
                     <div class="field-row">
                         <div class="field" data-field="fullName">
-                            <label for="fullName">full_name<span class="req">*</span></label>
+                            <label for="fullName">Full name<span class="req">*</span></label>
                             <input class="prompt-input" type="text" id="fullName" name="fullName"
                                 placeholder="e.g. Arul Kumar" autocomplete="name">
                             <div class="field-err">Enter your full name.</div>
                         </div>
                         <div class="field" data-field="email">
-                            <label for="email">email<span class="req">*</span></label>
+                            <label for="email">Email<span class="req">*</span></label>
                             <input class="prompt-input" type="email" id="email" name="email"
                                 placeholder="you@college.edu" autocomplete="email">
                             <div class="field-err">Enter a valid email address.</div>
@@ -565,13 +524,13 @@
 
                     <div class="field-row">
                         <div class="field" data-field="phone">
-                            <label for="phone">phone<span class="req">*</span></label>
+                            <label for="phone">Phone<span class="req">*</span></label>
                             <input class="prompt-input" type="tel" id="phone" name="phone"
                                 placeholder="10-digit mobile number" autocomplete="tel">
                             <div class="field-err">Enter a valid 10-digit phone number.</div>
                         </div>
                         <div class="field" data-field="college">
-                            <label for="college">college<span class="req">*</span></label>
+                            <label for="college">College<span class="req">*</span></label>
                             <input class="prompt-input" type="text" id="college" name="college"
                                 placeholder="e.g. SMVEC, Pondicherry" autocomplete="organization">
                             <div class="field-err">Enter your college name.</div>
@@ -580,9 +539,9 @@
 
                     <div class="field-row">
                         <div class="field" data-field="year">
-                            <label for="year">year_of_study<span class="req">*</span></label>
+                            <label for="year">Year of study<span class="req">*</span></label>
                             <select id="year" name="year">
-                                <option value="" disabled selected>select year</option>
+                                <option value="" disabled selected>Select year</option>
                                 <option>1st Year</option>
                                 <option>2nd Year</option>
                                 <option>3rd Year</option>
@@ -592,16 +551,16 @@
                             <div class="field-err">Select your current year.</div>
                         </div>
                         <div class="field" data-field="branch">
-                            <label for="branch">branch <span class="hint">(optional)</span></label>
+                            <label for="branch">Branch <span class="hint">(optional)</span></label>
                             <input class="prompt-input" type="text" id="branch" name="branch"
                                 placeholder="e.g. CSE (Business Systems)">
                         </div>
                     </div>
 
                     <div class="field" data-field="track">
-                        <label for="track">track<span class="req">*</span></label>
+                        <label for="track">Track<span class="req">*</span></label>
                         <select id="track" name="track">
-                            <option value="" disabled selected>select the track you're applying for</option>
+                            <option value="" disabled selected>Select the track you're applying for</option>
                             <option>Firmware / Embedded (Pi builds, USB gadget mode)</option>
                             <option>Frontend / UI (product &amp; site interfaces)</option>
                             <option>ML / Model Ops (quantization, inference tuning)</option>
@@ -612,21 +571,21 @@
                     </div>
 
                     <div class="field" data-field="links">
-                        <label for="links">portfolio_or_github <span class="hint">(optional)</span></label>
+                        <label for="links">Portfolio or GitHub <span class="hint">(optional)</span></label>
                         <input class="prompt-input" type="text" id="links" name="links"
                             placeholder="GitHub, LinkedIn, portfolio link">
                     </div>
 
                     <div class="field" data-field="why">
-                        <label for="why">why_this_internship<span class="req">*</span></label>
+                        <label for="why">Why this internship?<span class="req">*</span></label>
                         <textarea id="why" name="why"
                             placeholder="A few lines on what you want to work on and why."></textarea>
                         <div class="field-err">Tell us a little about why you're applying (min. 20 characters).</div>
                     </div>
 
                     <div class="submit-row">
-                        <button type="submit" class="btn-submit" id="submitBtn">./submit_application</button>
-                        <span class="submit-note">no account needed &middot; takes ~2 min</span>
+                        <button type="submit" class="btn-submit" id="submitBtn">Submit application</button>
+                        <span class="submit-note">No account needed · takes ~2 min</span>
                     </div>
 
                     <div class="status-msg" id="statusMsg"></div>
@@ -645,15 +604,15 @@
     </div>
 
     <div class="info-strip">
-        <div><span class="k">MODE</span><span class="v">Remote &amp; on-site (Pondicherry)</span></div>
-        <div><span class="k">DURATION</span><span class="v">Flexible, project-based</span></div>
-        <div><span class="k">CONTACT</span><span class="v">careers@darksyntax.in</span></div>
-        <div><span class="k">VERIFY</span><span class="v"><a href="/verify" style="color:var(--teal); text-decoration:none;">Verify a certificate →</a></span></div>
+        <div><span class="k">Mode</span><span class="v">Remote &amp; on-site (Pondicherry)</span></div>
+        <div><span class="k">Duration</span><span class="v">Flexible, project-based</span></div>
+        <div><span class="k">Contact</span><span class="v">careers@darksyntax.in</span></div>
+        <div><span class="k">Verify</span><span class="v"><a href="/verify" style="color:var(--primary); text-decoration:none; font-weight:600;">Verify a certificate →</a></span></div>
     </div>
 
     <footer>
         <div class="brand">DARKSYNTAX — web &amp; automation, and the team behind ThinkStick</div>
-        <div>applications reviewed on a rolling basis</div>
+        <div>Applications reviewed on a rolling basis</div>
     </footer>
 
     <script>
@@ -702,7 +661,7 @@
                     if (!validateField(name)) allValid = false;
                 });
                 if (!allValid) {
-                    setStatus('[ ERR ] fix the highlighted fields above and try again.', 'err');
+                    setStatus('Please fix the highlighted fields above and try again.', 'err');
                     form.querySelector('.field.invalid input, .field.invalid select, .field.invalid textarea')?.focus();
                     return;
                 }
@@ -710,8 +669,8 @@
                 const data = Object.fromEntries(new FormData(form).entries());
 
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'submitting...';
-                setStatus('[ .. ] sending application to server', '');
+                submitBtn.textContent = 'Submitting…';
+                setStatus('Sending your application…', '');
 
                 try {
                     const res = await fetch('/api/apply', {
@@ -731,14 +690,14 @@
                         throw new Error(result.error || 'Submission failed');
                     }
 
-                    refCode.textContent = 'reference: ' + result.reference;
+                    refCode.textContent = 'Reference: ' + result.reference;
                     formStage.style.display = 'none';
                     successStage.classList.add('show');
 
                 } catch (err) {
-                    setStatus('[ ERR ] ' + (err.message || 'could not send — please email careers@darksyntax.in directly.'), 'err');
+                    setStatus((err.message || 'Could not send — please email careers@darksyntax.in directly.'), 'err');
                     submitBtn.disabled = false;
-                    submitBtn.textContent = './submit_application';
+                    submitBtn.textContent = 'Submit application';
                 }
             });
         })();
