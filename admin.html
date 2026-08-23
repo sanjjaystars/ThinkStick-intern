@@ -6,158 +6,149 @@
 <title>Admin — DarkSyntax</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
-    rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --void: #0A0C0E; --panel: #12161A; --panel-2: #171C21;
-    --copper: #FFB000; --copper-dim: #7A5A1E; --teal: #00D9B5; --red: #FF5C5C;
-    --text: #F2EFE9; --muted: #8A8F94; --line: #22282E;
-    --disp: 'Space Grotesk', sans-serif; --body: 'Inter', sans-serif; --mono: 'JetBrains Mono', monospace;
+    --bg: #F3F2EF; --surface: #FFFFFF; --border: #D9DDE1; --border-strong: #C1C7CD;
+    --text: #1A1D21; --muted: #5E6B7A;
+    --primary: #0A66C2; --primary-hover: #084E96; --primary-soft: #EAF3FC;
+    --success: #057642; --success-soft: #E9F5EE;
+    --danger: #B3261E; --danger-soft: #FDEDEC;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--void); color: var(--text); font-family: var(--body); min-height: 100vh; }
-  ::selection { background: var(--copper); color: #0A0C0E; }
-  .pcb-bg {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(0,217,181,0.05), transparent 40%),
-      radial-gradient(circle at 85% 70%, rgba(255,176,0,0.06), transparent 45%),
-      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 42px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 42px);
-  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+  ::selection { background: var(--primary-soft); color: var(--primary); }
   nav {
-    position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 5vw; font-family: var(--mono); font-size: 13px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 5vw; background: var(--surface); border-bottom: 1px solid var(--border);
   }
-  nav .logo { font-family: var(--disp); font-weight: 700; font-size: 16px; letter-spacing: 2px; }
-  nav .logo span { color: var(--copper); }
+  nav .logo { font-weight: 800; font-size: 18px; letter-spacing: -0.3px; }
+  nav .logo span { color: var(--primary); }
   #logout-btn {
-    background: transparent; border: 1px solid var(--line); color: var(--muted);
-    font-family: var(--mono); font-size: 12px; padding: 7px 14px; border-radius: 4px; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--border-strong); color: var(--muted);
+    font-size: 12.5px; font-weight: 600; padding: 7px 14px; border-radius: 20px; cursor: pointer;
     display: none;
   }
-  #logout-btn:hover { border-color: var(--red); color: var(--red); }
+  #logout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
-  main { position: relative; z-index: 1; padding: 0 5vw 80px; max-width: 1000px; margin: 0 auto; }
+  main { padding: 0 5vw 80px; max-width: 1000px; margin: 0 auto; }
 
   /* ---- login gate ---- */
-  .gate { max-width: 380px; margin: 80px auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 36px; text-align: center; }
-  .gate h1 { font-family: var(--disp); font-size: 22px; margin-bottom: 8px; }
+  .gate { max-width: 380px; margin: 80px auto; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 1px 8px rgba(16,24,40,0.04); padding: 36px; text-align: center; }
+  .gate h1 { font-weight: 800; font-size: 21px; margin-bottom: 8px; letter-spacing: -0.3px; }
   .gate p { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
   .gate input {
-    width: 100%; background: var(--void); border: 1px solid var(--line); color: var(--text);
-    font-family: var(--mono); font-size: 14px; padding: 12px 14px; border-radius: 4px; margin-bottom: 14px;
+    width: 100%; background: var(--surface); border: 1px solid var(--border-strong); color: var(--text);
+    font-family: var(--font); font-size: 14px; padding: 11px 14px; border-radius: 6px; margin-bottom: 14px;
   }
-  .gate input:focus { outline: none; border-color: var(--copper); }
+  .gate input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
   .gate button {
-    width: 100%; font-family: var(--mono); font-size: 13px; font-weight: 700; background: var(--copper);
-    color: #0A0C0E; border: none; border-radius: 4px; padding: 12px; cursor: pointer;
+    width: 100%; font-size: 14px; font-weight: 700; background: var(--primary);
+    color: #fff; border: none; border-radius: 24px; padding: 12px; cursor: pointer;
   }
-  .gate button:hover { background: #ffc233; }
-  .gate .err { color: var(--red); font-family: var(--mono); font-size: 12px; margin-top: 12px; min-height: 16px; }
+  .gate button:hover { background: var(--primary-hover); }
+  .gate .err { color: var(--danger); font-size: 12px; margin-top: 12px; min-height: 16px; }
 
   /* ---- dashboard ---- */
   #dash { display: none; }
   .dash-head { display: flex; align-items: center; justify-content: space-between; margin: 20px 0 24px; flex-wrap: wrap; gap: 12px; }
-  .dash-head h1 { font-family: var(--disp); font-size: 26px; }
-  .stat-row { display: flex; gap: 10px; font-family: var(--mono); font-size: 11.5px; }
-  .stat { border: 1px solid var(--line); border-radius: 20px; padding: 6px 13px; color: var(--muted); }
+  .dash-head h1 { font-weight: 800; font-size: 24px; letter-spacing: -0.3px; }
+  .stat-row { display: flex; gap: 10px; font-size: 12.5px; }
+  .stat { border: 1px solid var(--border); background: var(--surface); border-radius: 20px; padding: 6px 13px; color: var(--muted); font-weight: 600; }
   .stat b { color: var(--text); }
-  .stat.pending b { color: var(--copper); }
-  .stat.completed b { color: var(--teal); }
+  .stat.pending b { color: #B7791F; }
+  .stat.completed b { color: var(--success); }
 
   .toolbar { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
   .toolbar input {
-    flex: 1; min-width: 200px; background: var(--panel); border: 1px solid var(--line); color: var(--text);
-    font-family: var(--mono); font-size: 13px; padding: 10px 14px; border-radius: 4px;
+    flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border-strong); color: var(--text);
+    font-family: var(--font); font-size: 13.5px; padding: 10px 14px; border-radius: 6px;
   }
-  .toolbar input:focus { outline: none; border-color: var(--copper); }
+  .toolbar input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
   .toolbar select {
-    background: var(--panel); border: 1px solid var(--line); color: var(--text);
-    font-family: var(--mono); font-size: 13px; padding: 10px 14px; border-radius: 4px; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--border-strong); color: var(--text);
+    font-family: var(--font); font-size: 13.5px; padding: 10px 14px; border-radius: 6px; cursor: pointer;
   }
 
   .app-list { display: flex; flex-direction: column; gap: 10px; }
-  .app-card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .app-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; box-shadow: 0 1px 2px rgba(16,24,40,0.03); }
   .app-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .app-name { font-family: var(--disp); font-size: 17px; font-weight: 600; }
-  .app-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); margin-top: 4px; line-height: 1.7; }
+  .app-name { font-weight: 700; font-size: 16.5px; }
+  .app-meta { font-size: 12.5px; color: var(--muted); margin-top: 4px; line-height: 1.7; }
   .app-meta a { color: var(--muted); }
-  .badge { font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
-  .badge.pending { background: rgba(255,176,0,0.1); color: var(--copper); border: 1px solid rgba(255,176,0,0.35); }
-  .badge.completed { background: rgba(0,217,181,0.1); color: var(--teal); border: 1px solid rgba(0,217,181,0.35); }
+  .badge { font-size: 11px; font-weight: 700; letter-spacing: 0.3px; padding: 4px 11px; border-radius: 20px; white-space: nowrap; text-transform: uppercase; }
+  .badge.pending { background: #FEF6E7; color: #B7791F; border: 1px solid #F5DFA8; }
+  .badge.completed { background: var(--success-soft); color: var(--success); border: 1px solid rgba(5,118,66,0.25); }
 
-  .app-why { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 12px; max-width: 640px; }
+  .app-why { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-top: 12px; max-width: 640px; font-style: italic; }
 
   .app-actions { margin-top: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .btn-gen {
-    font-family: var(--mono); font-size: 12.5px; font-weight: 700; background: var(--copper); color: #0A0C0E;
-    border: none; border-radius: 4px; padding: 9px 16px; cursor: pointer;
+    font-size: 13px; font-weight: 700; background: var(--primary); color: #fff;
+    border: none; border-radius: 20px; padding: 9px 18px; cursor: pointer;
   }
-  .btn-gen:hover { background: #ffc233; }
+  .btn-gen:hover { background: var(--primary-hover); }
   .cert-link {
-    font-family: var(--mono); font-size: 12px; color: var(--teal); text-decoration: none;
-    border: 1px solid rgba(0,217,181,0.35); border-radius: 4px; padding: 8px 14px;
+    font-size: 12.5px; font-weight: 600; color: var(--primary); text-decoration: none;
+    border: 1px solid var(--primary); border-radius: 20px; padding: 8px 15px;
   }
-  .cert-link:hover { background: rgba(0,217,181,0.08); }
+  .cert-link:hover { background: var(--primary-soft); }
 
-  .empty { text-align: center; color: var(--muted); font-family: var(--mono); font-size: 13px; padding: 60px 0; }
+  .empty { text-align: center; color: var(--muted); font-size: 13.5px; padding: 60px 0; }
 
   /* ---- modal ---- */
   .modal-overlay {
-    position: fixed; inset: 0; z-index: 100; background: rgba(10,12,14,0.85); backdrop-filter: blur(4px);
+    position: fixed; inset: 0; z-index: 100; background: rgba(26,29,33,0.6); backdrop-filter: blur(3px);
     display: none; align-items: center; justify-content: center; padding: 20px;
   }
   .modal-overlay.show { display: flex; }
   .modal {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 28px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px;
     width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 8px 30px rgba(16,24,40,0.15);
   }
-  .modal h3 { font-family: var(--disp); font-size: 20px; margin-bottom: 4px; }
+  .modal h3 { font-weight: 800; font-size: 19px; margin-bottom: 4px; letter-spacing: -0.3px; }
   .modal .sub { color: var(--muted); font-size: 12.5px; margin-bottom: 20px; }
   .modal label {
-    display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; color: var(--copper);
+    display: block; font-size: 12.5px; font-weight: 600; color: var(--text);
     margin-bottom: 6px; margin-top: 14px;
   }
   .modal label:first-of-type { margin-top: 0; }
   .modal input, .modal select, .modal textarea {
-    width: 100%; background: var(--void); border: 1px solid var(--line); color: var(--text);
-    font-family: var(--mono); font-size: 13.5px; padding: 10px 12px; border-radius: 4px;
+    width: 100%; background: var(--surface); border: 1px solid var(--border-strong); color: var(--text);
+    font-family: var(--font); font-size: 13.5px; padding: 10px 12px; border-radius: 6px;
   }
-  .modal input:focus, .modal select:focus, .modal textarea:focus { outline: none; border-color: var(--copper); }
-  .modal textarea { min-height: 70px; resize: vertical; font-family: var(--body); font-size: 13.5px; }
+  .modal input:focus, .modal select:focus, .modal textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+  .modal textarea { min-height: 70px; resize: vertical; }
   .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
   .modal-actions button {
-    flex: 1; font-family: var(--mono); font-size: 13px; font-weight: 700; border-radius: 4px; padding: 11px; cursor: pointer; border: none;
+    flex: 1; font-size: 13.5px; font-weight: 700; border-radius: 20px; padding: 11px; cursor: pointer; border: none;
   }
-  .btn-confirm { background: var(--copper); color: #0A0C0E; }
-  .btn-confirm:hover { background: #ffc233; }
-  .btn-confirm:disabled { opacity: 0.5; cursor: progress; }
-  .btn-cancel { background: transparent; border: 1px solid var(--line) !important; color: var(--muted); }
-  .btn-cancel:hover { border-color: var(--red) !important; color: var(--red); }
-  .modal-status { font-family: var(--mono); font-size: 12px; margin-top: 14px; min-height: 16px; }
-  .modal-status.err { color: var(--red); }
-  .modal-status.ok { color: var(--teal); }
+  .btn-confirm { background: var(--primary); color: #fff; }
+  .btn-confirm:hover { background: var(--primary-hover); }
+  .btn-confirm:disabled { opacity: 0.55; cursor: progress; }
+  .btn-cancel { background: var(--surface); border: 1px solid var(--border-strong) !important; color: var(--muted); }
+  .btn-cancel:hover { border-color: var(--danger) !important; color: var(--danger); }
+  .modal-status { font-size: 12.5px; margin-top: 14px; min-height: 16px; }
+  .modal-status.err { color: var(--danger); }
+  .modal-status.ok { color: var(--success); }
 
   @media (max-width:520px) { .modal-row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<div class="pcb-bg"></div>
-
 <nav>
-  <div class="logo">DARK<span>SYNTAX</span> <span style="color:var(--muted); font-size:11px;">/ admin</span></div>
-  <button id="logout-btn">logout</button>
+  <div class="logo">DARK<span>SYNTAX</span> <span style="color:var(--muted); font-size:12px; font-weight:400;">/ admin</span></div>
+  <button id="logout-btn">Logout</button>
 </nav>
 
 <main>
   <div class="gate" id="gate">
     <h1>Admin access</h1>
-    <p>Private — internship applications & certificate issuance.</p>
+    <p>Private — internship applications &amp; certificate issuance.</p>
     <input type="password" id="password-input" placeholder="Password" autocomplete="current-password">
     <button id="login-btn">Unlock</button>
     <div class="err" id="gate-err"></div>
@@ -339,7 +330,7 @@ function renderList(){
               ${a.links ? `<br>Links: ${esc(a.links)}` : ''}
             </div>
           </div>
-          <span class="badge ${isCompleted ? 'completed' : 'pending'}">${isCompleted ? 'CERTIFIED' : 'PENDING'}</span>
+          <span class="badge ${isCompleted ? 'completed' : 'pending'}">${isCompleted ? 'Certified' : 'Pending'}</span>
         </div>
         ${a.why ? `<div class="app-why">"${esc(a.why)}"</div>` : ''}
         <div class="app-actions">
