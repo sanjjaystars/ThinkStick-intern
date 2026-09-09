@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify Certificate — DarkSyntax</title>
+<title>Verify Certificate — Staravia</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -190,7 +190,7 @@
 <body>
 
 <nav>
-  <a class="logo" href="/">DARK<span>SYNTAX</span></a>
+  <a class="logo" href="/">STAR<span>AVIA</span></a>
   <a class="back" href="/">← Back to internships</a>
 </nav>
 
@@ -201,7 +201,7 @@
 </main>
 
 <footer>
-  Certificates are issued and verified by DarkSyntax · Udyam No. UDYAM-PY-03-0058394 · darksyntax.xyz
+  Certificates are issued and verified by Staravia · Udyam No. UDYAM-PY-03-0058394 · darksyntax.xyz
 </footer>
 
 <!-- QR scanner overlay -->
@@ -221,7 +221,7 @@
 </div>
 
 <script>
-const ORG_NAME = "DarkSyntax";
+const ORG_NAME = "Staravia";
 const app = document.getElementById('app');
 
 function esc(s){ const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
@@ -289,7 +289,7 @@ function renderNotFound(id){
     <div class="not-found">
       <div class="icon">⚠️</div>
       <h2>No certificate found for "${esc(id)}"</h2>
-      <p>Double-check the certificate ID and try again, or contact DarkSyntax directly if you believe this is an error.</p>
+      <p>Double-check the certificate ID and try again, or contact Staravia directly if you believe this is an error.</p>
       <div class="lookup-row" style="margin:0 auto;">
         <input id="cert-input" type="text" placeholder="TS-2026-0007" autocomplete="off">
         <button id="cert-go">Verify</button>
@@ -306,7 +306,7 @@ function renderError(){
     <div class="not-found">
       <div class="icon">⚠️</div>
       <h2>Couldn't reach the certificate registry</h2>
-      <p>Something went wrong talking to the server. Try again in a moment, or contact DarkSyntax if this keeps happening.</p>
+      <p>Something went wrong talking to the server. Try again in a moment, or contact Staravia if this keeps happening.</p>
     </div>
   `;
 }
@@ -356,7 +356,7 @@ function renderCert(cert){
           </div>
           <div class="field">
             <span class="k">Issued by</span>
-            <span class="v">${esc(cert.mentor || 'SANJJAY — Founder, DarkSyntax')}</span>
+            <span class="v">${esc(cert.mentor || 'SANJJAY — Founder, Staravia')}</span>
           </div>
         </div>
 
