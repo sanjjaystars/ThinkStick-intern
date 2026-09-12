@@ -119,7 +119,7 @@ export default async function handler(req, res) {
     doc.font('Helvetica').fontSize(13.5).fillColor(BLACK);
     doc.text('Has successfully completed the internship at ', marginX, paraY, { continued: true, width: paraWidth, lineGap: 6 });
     doc.font('Helvetica-Bold').fillColor(ORANGE);
-    doc.text('DarkSyntax', { continued: true });
+    doc.text('Staravia', { continued: true });
     doc.font('Helvetica').fillColor(BLACK);
     doc.text(' from ', { continued: true });
     doc.font('Helvetica-Bold').fillColor(ORANGE);
@@ -149,7 +149,7 @@ export default async function handler(req, res) {
     const footerY = 560;
     doc.moveTo(marginX, footerY).lineTo(marginX + 160, footerY).lineWidth(1).stroke(LINE);
     doc.font('Helvetica-Bold').fontSize(13).fillColor(BLACK).text(cert.mentor || 'SANJJAY', marginX, footerY + 12);
-    doc.font('Helvetica').fontSize(11).fillColor(MUTED).text('Founder, DarkSyntax', marginX, footerY + 30);
+    doc.font('Helvetica').fontSize(11).fillColor(MUTED).text('Founder, Staravia', marginX, footerY + 30);
 
     const col2X = marginX + 230;
     doc.moveTo(col2X, footerY).lineTo(col2X + 160, footerY).lineWidth(1).stroke(LINE);
